@@ -29,6 +29,8 @@ class CalcController {
 
   clearAll() {
     this._operation = [];
+    this._lastOperator = "";
+    this._lastNumber = "";
     this.setLastNumberToDisplay();
   }
 
@@ -60,8 +62,6 @@ class CalcController {
   }
 
   getResult() {
-
- 
     return eval(this._operation.join(""));
   }
 
@@ -70,8 +70,7 @@ class CalcController {
 
     this._lastOperator = this.getLastItem();
 
-    if(this._operation.length < 3){
-
+    if (this._operation.length < 3) {
       let firstItem = this._operation[0];
       this._operation = [firstItem, this._lastOperator, this._lastNumber];
     }
@@ -80,11 +79,9 @@ class CalcController {
       last = this._operation.pop();
 
       this._lastNumber = this.getResult();
-    } else  if (this._operation.length == 3) {
+    } else if (this._operation.length == 3) {
       this._lastNumber = this.getLastItem(false);
     }
-
-
 
     let result = this.getResult();
     if (last == "%") {
@@ -110,8 +107,8 @@ class CalcController {
       }
     }
 
-    if(!lastItem){
-      lastItem = (isOperator) ? this._lastOperator : this._lastNumber; 
+    if (!lastItem) {
+      lastItem = isOperator ? this._lastOperator : this._lastNumber;
     }
 
     return lastItem;
@@ -129,8 +126,6 @@ class CalcController {
     if (isNaN(this.getLastOperation())) {
       if (this.isOperator(value)) {
         this.setLastOperation(value);
-      } else if (isNaN(value)) {
-        console.log("outracoisa", value);
       } else {
         this.pushOperation(value);
 
@@ -141,7 +136,7 @@ class CalcController {
         this.pushOperation(value);
       } else {
         let newValue = this.getLastOperation().toString() + value.toString();
-        this.setLastOperation(parseInt(newValue));
+        this.setLastOperation(parseFloat(newValue));
 
         this.setLastNumberToDisplay();
       }
@@ -150,6 +145,18 @@ class CalcController {
 
   setError() {
     this.displayCalc = "Error";
+  }
+
+  addDot() {
+    let lastOperation = this.getLastOperation();
+
+    if (this.isOperator(lastOperation) || !lastOperation) {
+      this.pushOperation("0.");
+    } else {
+      this.setLastOperation(lastOperation.toString() + ".");
+    }
+
+    this.setLastNumberToDisplay();
   }
 
   execBtn(value) {
@@ -179,7 +186,7 @@ class CalcController {
         this.calc();
         break;
       case "ponto":
-        this.addOperator(".");
+        this.addDot();
         break;
       case "0":
       case "1":
