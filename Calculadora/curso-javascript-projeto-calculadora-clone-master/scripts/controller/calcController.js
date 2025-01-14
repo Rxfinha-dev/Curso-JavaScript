@@ -152,7 +152,14 @@ class CalcController {
   }
 
   getResult() {
-    return eval(this._operation.join(""));
+    try {
+      return eval(this._operation.join(""));
+    } catch (e) {
+      setTimeout(()=>{
+        this.setError(e);
+      },0.1)
+      
+    }
   }
 
   calc() {
@@ -348,7 +355,7 @@ class CalcController {
   }
 
   set displayCalc(valor) {
-    if (valor.toString().length>10){
+    if (valor.toString().length > 10) {
       this.setError();
       return false;
     }
